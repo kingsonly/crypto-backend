@@ -1,0 +1,79 @@
+name: crypto_deploy
+
+on:
+  # push:
+  #   # branches:
+  #   #   - main
+  pull_request:
+    branches:
+      - dev
+    types: [closed]
+
+jobs:
+  crypto-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+        with:
+          php-version: '8.3'
+
+      - name: Copy .env
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+
+      - name: Install Dependencies
+        run: CI=false composer clear-cache && CI=false composer install && CI=false php artisan key:generate
+
+      - name: Run Tests
+        run: |
+          CI=false php artisan test
+          echo "Exit code: $?"
+
+  crypto-dev:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+        with:
+          php-version: '8.3'
+
+      - name: Copy .env
+        run: php -r "file_exists('.env') || copy('.env.example', '.env');"
+
+      - name: Install Dependencies
+        run: CI=false composer clear-cache && CI=false composer install && CI=false php artisan key:generate
+
+      - name: Update apt repositories
+        run: sudo apt update
+
+      - name: Install rsync
+        run: sudo apt-get install -y rsync 
+
+      - name: Find and replace in document
+        run: |
+          sed -i -e 's:/public/index.php:/index.php:g' public/index.php &&
+          sed -i -e 's:/../vendor/autoload.php:/vendor/autoload.php:g' public/index.php &&
+          sed -i -e 's:DB_DATABASE=forge:DB_DATABASE=skillz_nnpc_gas:g' .env &&
+          sed -i -e 's:DB_USERNAME=forge:DB_USERNAME=skillz_nnpc:g' .env  &&
+          sed -i -e 's:/../bootstrap/app.php:/bootstrap/app.php:g' public/index.php &&
+          sed -i -e 's:DB_PASSWORD=forge:DB_PASSWORD=nnpcNGML:g' .env 
+# change service_name_placeholder to the name of your service eg automator etc 
+      - name: SSH login
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{secrets.SSH_PRIVATE_KEY}}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          rsync --delete -va -e 'ssh -p 21098 -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no' \
+            app database phpunit.xml storage vendor artisan .env tests bootstrap \
+            composer.json resources composer.lock routes config package.json \
+            public/ public coinjzcf@198.54.114.151:api
+# change service_name_placeholder to the name of your service eg automator etc  
+      - name: SSH and effect migration
+        run: |
+          ssh -p 21098 -i ~/.ssh/id_rsa -t coinjzcf@198.54.114.151 "cd api && php artisan migrate:fresh && php artisan db:seed"

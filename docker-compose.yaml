@@ -1,0 +1,39 @@
+version: "3.2"
+services:
+  crypto:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: "php artisan serve --host=0.0.0.0"
+    volumes:
+      - .:/app
+    ports:
+      - 2000:8000
+    networks:
+      - crypto_network
+
+  crypto_database:
+    image: mariadb:10.5.8
+    environment:
+      - MYSQL_ROOT_PASSWORD=Ubuxa##99
+      - MYSQL_DATABASE=forge
+      - MYSQL_USER=forge
+      - MYSQL_PASSWORD=Ubuxa##99
+    networks:
+      - crypto_network
+  # phpmyadmin
+  phpmyadmin:
+    image: phpmyadmin
+    ports:
+      - 1048:80
+    environment:
+      - PMA_HOST=crypto_database
+      - PMA_PASSWORD=Ubuxa##99
+    networks:
+      - crypto_network
+    restart: unless-stopped
+    volumes:
+      - .:/app
+
+networks:
+  crypto_network:
