@@ -25,7 +25,7 @@ services:
   phpmyadmin:
     image: phpmyadmin
     ports:
-      - 1048:80
+      - 1049:80
     environment:
       - PMA_HOST=crypto_database
       - PMA_PASSWORD=Ubuxa##99

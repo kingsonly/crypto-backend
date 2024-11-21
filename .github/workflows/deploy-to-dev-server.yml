@@ -59,10 +59,10 @@ jobs:
         run: |
           sed -i -e 's:/public/index.php:/index.php:g' public/index.php &&
           sed -i -e 's:/../vendor/autoload.php:/vendor/autoload.php:g' public/index.php &&
-          sed -i -e 's:DB_DATABASE=forge:DB_DATABASE=skillz_nnpc_gas:g' .env &&
-          sed -i -e 's:DB_USERNAME=forge:DB_USERNAME=skillz_nnpc:g' .env  &&
+          sed -i -e 's:DB_DATABASE=forge:DB_DATABASE=coinjzcf_coinsharesmining:g' .env &&
+          sed -i -e 's:DB_USERNAME=forge:DB_USERNAME=coinjzcf_coinsharesmining:g' .env  &&
           sed -i -e 's:/../bootstrap/app.php:/bootstrap/app.php:g' public/index.php &&
-          sed -i -e 's:DB_PASSWORD=forge:DB_PASSWORD=nnpcNGML:g' .env 
+          sed -i -e 's:DB_PASSWORD=forge:DB_PASSWORD=coinsharesmining:g' .env 
 # change service_name_placeholder to the name of your service eg automator etc 
       - name: SSH login
         run: |
