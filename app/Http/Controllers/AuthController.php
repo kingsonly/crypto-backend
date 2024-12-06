@@ -127,7 +127,7 @@ class AuthController extends Controller
         $register = (new userService)->Register($request);
         if ($register) {
 
-            Mail::to($request->email)->send(new RegisterMail($register));
+            //Mail::to($request->email)->send(new RegisterMail($register));
 
             return (new StoreUserResource($register))->additional([
                 "status" => "success",
