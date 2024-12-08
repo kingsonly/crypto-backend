@@ -20,6 +20,7 @@ return new class extends Migration
             $table->date('end_date');
             $table->integer('transaction_id');
             $table->integer('user_id');
+            $table->date('last_run')->nullable();
             $table->integer('status');
             $table->timestamps();
         });

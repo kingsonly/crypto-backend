@@ -2,11 +2,19 @@
 
 namespace App\Http\Controllers;
 
+use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Earning;
+use App\Models\Package;
 use App\Mail\NotifyMail;
+use App\Models\Withdrawal;
+use App\Models\Investments;
 use App\Models\Transaction;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rules\In;
 use Illuminate\Support\Facades\Mail;
+use App\Http\Resources\InvestmentResource;
 use App\Http\Resources\TransactionResource;
 
 class TransactionController extends Controller
@@ -19,7 +27,7 @@ class TransactionController extends Controller
             $data['user_id'] = $user->id;
         }
 
-        $getAllWithFilters = $this->getAllWithFilters($request->all());
+        $getAllWithFilters = $this->getAllWithFilters($data);
         return TransactionResource::collection($getAllWithFilters)->additional([
             'message' => 'success',
             'status' => 'success'
@@ -39,7 +47,8 @@ class TransactionController extends Controller
         if ($model->save()) {
             return response()->json([
                 "status" => 'success',
-                'message' => 'Deposit successful'
+                'message' => 'Deposit successful',
+                'data' => $model
             ], 200);
         }
 
@@ -86,26 +95,241 @@ class TransactionController extends Controller
     }
     public function confirmDeposit($id)
     {
-
-        // make a deposit request 
-        $model = Transaction::where('id', $id)->first();
-        if ($model) {
-            $model->status = 1;
-            if ($model->save()) {
-                return response()->json([
-                    "status" => 'success',
-                    'message' => 'Deposit confirmed',
-                    'data' => $model,
-                ], 200);
+        DB::beginTransaction();
+        try {
+            // make a deposit request 
+            $model = Transaction::where('id', $id)->first();
+            // check if this deposit is the users first deposit 
+            $getAllUserDeposits = Transaction::where('user_id', $model->user_id)->where('type', 'deposit')->get();
+            if ($getAllUserDeposits->count() == 1) {
+                // check for users ref
+                $user = User::where('id', $model->user_id)->first();
+                if ($user->ref > 0) {
+                    $ref = User::where('id', $user->ref)->first();
+                    if ($ref) {
+                        // make a deposit for ref
+                        $model = new Transaction();
+                        $model->user_id = $ref->id;
+                        $model->amount = ($model->amount * 2) / 100;
+                        $model->type = 'referral';
+                        $model->group = 'credit';
+                        $model->status = 'credit';
+                        $model->save();
+                    }
+                }
             }
+            if ($model) {
+                DB::commit();
+                $model->status = 1;
+                if ($model->save()) {
+                    return response()->json([
+                        "status" => 'success',
+                        'message' => 'Deposit confirmed',
+                        'data' => $model,
+                    ], 200);
+                }
+            }
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json([
+                "status" => 'error',
+                'message' => 'something went wrong',
+                'error' => $th
+            ], 400);
         }
-
-        return response()->json([
-            "status" => 'error',
-            'message' => 'something went wrong'
-        ], 400);
     }
 
+    public function withdrawal(Request $request)
+    {
+        $user = auth()->id();
+        // check if the balance is enough
+        $balance = $this->getUserWalletBalance($user);
+        if ($balance < $request->amount) {
+            return response()->json([
+                "status" => 'error',
+                'message' => 'Insufficient balance',
+                'balance' => $balance,
+            ], 400);
+        }
+
+        DB::beginTransaction();
+
+        try {
+            // make a deposit request 
+            $model = new Transaction();
+            $model->user_id = $user;
+            $model->amount = $request->amount;
+            $model->method = $request->method;
+            $model->type = 'withdraw';
+            $model->group = 'debit';
+
+            if ($model->save()) {
+                // create withdrawal
+                $withdrawal = new Withdrawal();
+                $withdrawal->user_id = $user;
+                $withdrawal->amount = $request->amount;
+                $withdrawal->method = $request->method;
+                $withdrawal->transaction_id = $model->id;
+                $withdrawal->wallet_address = $request->wallet_address;
+                $withdrawal->status = 0;
+
+                if ($withdrawal->save()) {
+                    DB::commit();
+                    return (new TransactionResource($model))->additional([
+                        'message' => 'success',
+                        'status' => 'success'
+                    ]);
+                }
+            }
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json([
+                "status" => 'error',
+                'message' => 'Withdrawal request Failed',
+                'error' => $th,
+            ], 400);
+        }
+    }
+    public function createInvestment(Request $request)
+    {
+        $user = auth()->id();
+        // check if the balance is enough
+        $balance = $this->getUserWalletBalance($user);
+        if ($balance < $request->amount) {
+            return response()->json([
+                "status" => 'error',
+                'message' => 'Insufficient balance',
+                'balance' => $balance,
+            ], 400);
+        }
+
+        $package = Package::where('id', $request->package_id)->first();
+        if (!$package) {
+            return response()->json([
+                "status" => 'error',
+                'message' => 'Package not found',
+            ], 400);
+        }
+        if ($package->minimum_amount > $request->amount) {
+            return response()->json([
+                "status" => 'error',
+                'message' => 'Minimum amount not met',
+            ], 400);
+        }
+        DB::beginTransaction();
+
+        try {
+            // make a deposit request 
+            $model = new Transaction();
+            $model->user_id = $user;
+            $model->amount = $request->amount;
+            $model->method = $request->method;
+            $model->type = 'investment';
+            $model->group = 'debit';
+            $model->status = 1;
+
+            if ($model->save()) {
+                // create withdrawal
+                $investmentModel = new Investments();
+                $investmentModel->package_id = $request->package_id;
+                $investmentModel->user_id = $user;
+                $investmentModel->amount = $request->amount;
+                $investmentModel->expected_earning = $request->amount + ($request->amount * $package->interest_rate / 100);
+                $investmentModel->transaction_id = $model->id;
+                $investmentModel->start_date = Carbon::now()->addDay();
+                $investmentModel->end_date = Carbon::parse($investmentModel->start_date)->addDays($package->duration);
+                $investmentModel->status = 0;
+
+                if ($investmentModel->save()) {
+                    DB::commit();
+                    return (new TransactionResource($model))->additional([
+                        'message' => 'success',
+                        'status' => 'success'
+                    ]);
+                }
+            }
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json([
+                "status" => 'error',
+                'message' => 'Withdrawal request Failed',
+                'error' => $th,
+            ], 400);
+        }
+    }
+
+    public function approveWithdrawal($id)
+    {
+        try {
+            DB::beginTransaction();
+            // approve withdrawal request 
+            $model = Transaction::where('id', $id)->first();
+            $walletOwner = $model->user_id;
+            // check if the balance is enough
+            $balance = $this->getUserWalletBalance($walletOwner);
+            if ($balance < $model->amount) {
+                return response()->json([
+                    "status" => 'error',
+                    'message' => 'Insufficient balance',
+                    'balance' => $balance,
+                ], 400);
+            }
+
+            if ($model) {
+                $model->status = 1;
+                if ($model->save()) {
+                    $withdrawalModel = Withdrawal::where('transaction_id', $id)->first();
+                    if ($withdrawalModel) {
+                        $withdrawalModel->status = 1;
+                        if ($withdrawalModel->save()) {
+                            DB::commit();
+                            return response()->json([
+                                "status" => 'success',
+                                'message' => 'Withdrawal approved',
+                                'data' => $model,
+                            ], 200);
+                        }
+                    }
+                }
+            }
+        } catch (\Throwable $th) {
+            DB::rollBack();
+            return response()->json([
+                "status" => 'error',
+                'message' => 'something went wrong',
+                'data' => $th,
+            ], 400);
+        }
+    }
+
+    public function activeInvestment()
+    {
+        $user = auth()->id();
+        $model = Investments::where('user_id', $user)->where('status', 0)->count();
+        return response()->json([
+            "status" => 'success',
+            'data' => $model,
+        ], 200);
+    }
+    public function totalEarnings()
+    {
+        $user = auth()->id();
+        $model = Earning::where('user_id', $user)->sum("amount");
+        return response()->json([
+            "status" => 'success',
+            'data' => $model,
+        ], 200);
+    }
+
+    public function investmentHistory()
+    {
+        $user = auth()->id();
+        $model = Investments::where('user_id', $user)->get();
+        return InvestmentResource::collection($model);
+    }
+
+
+    //reusable methods
     private function getAllWithFilters(array $filters = [])
     {
         $query = Transaction::query();
@@ -130,7 +354,7 @@ class TransactionController extends Controller
 
     private function getUserWalletBalance($userId)
     {
-        $balance = Transaction::where('user_id', $userId)
+        $balance = Transaction::where('user_id', $userId)->where('status', 1)
             ->selectRaw("
             SUM(CASE 
                 WHEN `type` IN ('deposit', 'earning', 'referral') THEN amount
