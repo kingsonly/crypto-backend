@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 
+use App\Models\User;
 use App\Mail\RegisterMail;
 use App\Service\AuthService;
 use App\Service\UserService;
@@ -116,6 +117,21 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
+        // if (isset($request->ref)) {
+        //     $validator = Validator::make($request->all(), [
+        //         'ref' => ['required', 'string', 'exists:users,username'],
+        //     ]);
+        //     if ($validator->fails()) {
+        //         return response()->json([
+        //             'status' => 'error',
+        //             'message' => "All fields are required ",
+        //             "data" => $validator->errors()
+        //         ], 400);
+        //     }
+        //     $getRef = User::where('username', $request->ref)->first();
+        //     $request->merge(['ref' => $getRef->id]);
+        // }
+
         if ($validator->fails()) {
             return response()->json([
                 'status' => 'error',
@@ -132,6 +148,7 @@ class AuthController extends Controller
             return (new StoreUserResource($register))->additional([
                 "status" => "success",
                 "message" => "Register Successfully",
+
             ]);
         }
         return response()->json([

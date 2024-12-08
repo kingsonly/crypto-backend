@@ -11,16 +11,16 @@ class Transaction extends Model
 
     public function investment()
     {
-        return $this->belongsTo(Investments::class);
+        return $this->hasOne(Investments::class);
     }
 
     public function withdrawal()
     {
-        return $this->belongsTo(Withdrawal::class);
+        return $this->hasOne(Withdrawal::class);
     }
 
     public function earning()
     {
-        return $this->belongsTo(Earning::class);
+        return $this->hasOne(Earning::class);
     }
 }
