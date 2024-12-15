@@ -19,9 +19,10 @@ class TransactionResource extends JsonResource
             'type' => $this->type,
             'group' => $this->group,
             'status' => $this->status,
-            'investment' => $this->investment,
+            'investment' => new InvestmentResource($this->investment), // Assuming you have a InvestmentResource$this->investment,
             'withdrawal' => $this->withdrawal,
             'earning' => $this->earning,
+            'date' => $this->created_at,
         ];
     }
 }

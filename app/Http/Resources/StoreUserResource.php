@@ -91,10 +91,9 @@ class StoreUserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'phone' => $this->phone,
-            'zone' => $this->zone,
-            'role' => $this->role,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at
+            'is_admin' => $this->is_admin,
+            'username' => $this->username,
+            'ref' => $this->ref,
         ];
     }
 }
