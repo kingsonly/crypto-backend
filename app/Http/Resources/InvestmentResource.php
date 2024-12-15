@@ -14,12 +14,12 @@ class InvestmentResource extends JsonResource
         return [
             'id' => $this->id,
             'amount' => $this->amount,
-            'expected_earning' => $this->user_id,
-            'start_date' => $this->method,
-            'end_date' => $this->type,
+            'expected_earning' => $this->expected_earning,
+            'start_date' => $this->start_date,
+            'end_date' => $this->end_date,
             'status' => $this->status,
             'earning_sum' => $this->earning->sum('amount'),
-            'earning' => $this->earning->sum('amount'),
+            'earning' => $this->earning,
             'package' => $this->package->name,
         ];
     }

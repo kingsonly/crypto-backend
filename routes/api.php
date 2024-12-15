@@ -3,6 +3,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\TransactionController;
 
@@ -35,4 +36,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/transaction/confirm-deposit/{id}', [TransactionController::class, 'confirmDeposit']);
     Route::post('/package/create', [PackageController::class, 'store']);
     Route::get('/package', [PackageController::class, 'index']);
+    Route::post('/user/update', [UserController::class, 'update']);
 });
