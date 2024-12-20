@@ -36,5 +36,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/transaction/confirm-deposit/{id}', [TransactionController::class, 'confirmDeposit']);
     Route::post('/package/create', [PackageController::class, 'store']);
     Route::get('/package', [PackageController::class, 'index']);
-    Route::post('/user/update', [UserController::class, 'update']);
+    Route::post('/user/update/{id}', [UserController::class, 'update']);
+    Route::post('/user', [UserController::class, 'index']);
 });

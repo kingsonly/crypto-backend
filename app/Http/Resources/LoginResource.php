@@ -44,8 +44,10 @@ class LoginResource extends JsonResource
             "message" => "Login Successfully",
             'id' => $this->id,
             'name' => $this->name,
-            'username' => $this->username,
             'email' => $this->email,
+            'username' => $this->username,
+            'is_admin' => $this->is_admin,
+            'ref' => $this->ref,
             "token" => $this->createToken("API TOKEN")->plainTextToken
         ];
     }

@@ -30,11 +30,9 @@ class ShowUserResource extends JsonResource
             'name' => $this->name,
             'email' => $this->email,
             'phone' => $this->phone,
-            'zone' => $this->zone,
-            'role' => [
-                'id' => $this->role->id,
-                'name' => $this->role->name,
-            ],
+            'is_admin' => $this->is_admin,
+            'username' => $this->username,
+            'ref' => $this->ref,
         ];
     }
 }
