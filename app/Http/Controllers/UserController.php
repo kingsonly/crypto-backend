@@ -494,11 +494,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => ['sometimes', 'string', 'max:255'],
             'email' => ['sometimes', 'string', "email"],
-            'phone' => ['sometimes', 'string', 'min:11'],
-            'role_id' => ['sometimes', 'string', 'max:255'],
-            'zone' => ['sometimes', 'string', 'max:255'],
             'password' => ['sometimes', 'string', 'max:255'],
-            'remember_token' => ['sometimes', 'string', 'max:255'],
         ]);
         $getUserId = 0;
 
