@@ -37,4 +37,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/package/create', [PackageController::class, 'store']);
     Route::get('/package', [PackageController::class, 'index']);
     Route::post('/user/update/{id}', [UserController::class, 'update']);
+    Route::post('/user', [UserController::class, 'index']);
 });
