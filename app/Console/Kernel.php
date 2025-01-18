@@ -39,7 +39,7 @@ class Kernel extends ConsoleKernel
     {
         $model  = Investments::where('status', 0)
             ->where(function ($query) {
-                $query->where('last_run', '<', Carbon::now())
+                $query->where('last_run', '<', Carbon::now()->toDateString())
                     ->orWhereNull('last_run');
             })
             ->limit(20)
