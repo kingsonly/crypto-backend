@@ -145,7 +145,7 @@ class TransactionController extends Controller
         $model = new Transaction();
         $model->user_id = $user;
         $model->amount = $request->amount;
-        $model->method = "bitcoin";
+        $model->method = "Bitcoin";
         $model->type = 'deposit';
         $model->group = 'credit';
         $model->status = 1;
