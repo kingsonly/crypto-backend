@@ -39,7 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/package/create', [PackageController::class, 'store']);
     Route::get('/package', [PackageController::class, 'index']);
     Route::post('/user/update/{id}', [UserController::class, 'update']);
-    Route::post('/user/update/{id}', [UserController::class, 'update']);
+    Route::post('/user', [UserController::class, 'index']);
     Route::delete('/user/destroy/{id}', [UserController::class, 'destroy']);
     Route::post('/wallet-address/update/{id}', [CryptoWalletController::class, 'update']);
     Route::post('/wallet/special-deposit/{id}', [TransactionController::class, 'depositToSpecificWallet']);
