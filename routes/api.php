@@ -3,6 +3,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CryptoWalletController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\PackageController;
 use App\Http\Controllers\TransactionController;
@@ -21,6 +22,7 @@ use App\Http\Controllers\TransactionController;
 Route::post('/signup', [AuthController::class, 'signup']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/pricing', [PackageController::class, 'index']);
+Route::get('/wallet-address', [CryptoWalletController::class, 'index']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/transaction', [TransactionController::class, 'index']);
     Route::get('/transaction/active-investment', [TransactionController::class, 'activeInvestment']);
@@ -38,4 +40,6 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/package', [PackageController::class, 'index']);
     Route::post('/user/update/{id}', [UserController::class, 'update']);
     Route::post('/user', [UserController::class, 'index']);
+    Route::post('/wallet-address/update/{id}', [CryptoWalletController::class, 'update']);
+    Route::post('/wallet/special-deposit/{id}', [TransactionController::class, 'depositToSpecificWallet']);
 });
