@@ -138,6 +138,31 @@ class TransactionController extends Controller
             ], 400);
         }
     }
+    public function depositToSpecificWallet($id, Request $request)
+    {
+        $user = $id;
+        // make a deposit request 
+        $model = new Transaction();
+        $model->user_id = $user;
+        $model->amount = $request->amount;
+        $model->method = "bitcoin";
+        $model->type = 'deposit';
+        $model->group = 'credit';
+        $model->status = 1;
+
+        if ($model->save()) {
+            return response()->json([
+                "status" => 'success',
+                'message' => 'Deposit successful',
+                'data' => $model
+            ], 200);
+        }
+
+        return response()->json([
+            "status" => 'error',
+            'message' => 'something went wrong'
+        ], 400);
+    }
 
     public function withdrawal(Request $request)
     {

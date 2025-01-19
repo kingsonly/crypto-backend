@@ -514,7 +514,7 @@ class UserController extends Controller
         }
 
         if (!empty($request->password)) {
-            $password = ["password" => Hash::make("$request->password")];
+            $password = ["password" => Hash::make($request->password)];
             $request->merge($password);
         }
 
