@@ -262,6 +262,7 @@ class TransactionController extends Controller
                 $investmentModel->expected_earning = $request->amount + ($request->amount * $package->interest_rate / 100);
                 $investmentModel->transaction_id = $model->id;
                 $investmentModel->start_date = Carbon::now()->addDay();
+                $investmentModel->last_run = Carbon::now();
                 $investmentModel->end_date = Carbon::parse($investmentModel->start_date)->addDays($package->duration);
                 $investmentModel->status = 0;
 
