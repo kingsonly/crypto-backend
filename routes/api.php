@@ -38,6 +38,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/transaction/confirm-deposit/{id}', [TransactionController::class, 'confirmDeposit']);
     Route::post('/package/create', [PackageController::class, 'store']);
     Route::get('/package', [PackageController::class, 'index']);
+    Route::post('/package/update/{id}', [PackageController::class, 'update']);
+    Route::delete('/package/delete/{id}', [PackageController::class, 'destroy']);
     Route::post('/user/update/{id}', [UserController::class, 'update']);
     Route::post('/user', [UserController::class, 'index']);
     Route::delete('/user/destroy/{id}', [UserController::class, 'destroy']);
