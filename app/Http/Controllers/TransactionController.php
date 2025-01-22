@@ -403,7 +403,7 @@ class TransactionController extends Controller
     public function investmentHistory()
     {
         $user = auth()->id();
-        $model = Investments::where('user_id', $user)->get();
+        $model = Investments::where('user_id', $user)->orderBy('id', 'desc')->get();
         return InvestmentResource::collection($model);
     }
 
@@ -411,7 +411,7 @@ class TransactionController extends Controller
     //reusable methods
     private function getAllWithFilters(array $filters = [])
     {
-        $query = Transaction::query();
+        $query = Transaction::orderBy('id', 'desc')->query();
 
         // Apply dynamic filters
         foreach ($filters as $key => $value) {
