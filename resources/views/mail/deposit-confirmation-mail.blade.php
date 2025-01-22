@@ -99,7 +99,7 @@
             </p>
             <div class="details">
                 <p><strong>Deposit Details:</strong></p>
-                <p><strong>Amount Deposited:</strong> {{ $data['transaction']->amount }}</p>
+                <p><strong>Amount Deposited:</strong> ${{ $data['transaction']->amount }}</p>
                 <p><strong>Deposit Method:</strong> {{ $data['transaction']->method }}</p>
                 <p><strong>Date Received:</strong> {{ $data['transaction']->updated_at }}</p>
             </div>

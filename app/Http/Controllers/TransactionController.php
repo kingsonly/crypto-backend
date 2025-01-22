@@ -48,6 +48,19 @@ class TransactionController extends Controller
         $model->group = 'credit';
 
         if ($model->save()) {
+            $transactionUsersName = User::where("id", $model->user_id)->first();
+            $details = [
+                "user" => $transactionUsersName,
+                "transaction" => $model,
+            ];
+            $admins = User::where('is_admin', 1)->get();
+            // send email
+            if ($admins->count() > 0) {
+                foreach ($admins as $admin) {
+                    Mail::to($admin->email)->send(new NotifyMail($details));
+                }
+            }
+
             return response()->json([
                 "status" => 'success',
                 'message' => 'Deposit successful',
@@ -83,8 +96,12 @@ class TransactionController extends Controller
 
     public function notifyAdminOfTransaction($id)
     {
-
-        $details = Transaction::where('id', $id)->first();
+        $transaction = Transaction::where('id', $id)->first();
+        $user = auth()->id();
+        $details = [
+            "user" => User::where("id", $user)->first(),
+            "transaction" => $transaction,
+        ];
         $admins = User::where('is_admin', 1)->get();
         // send email
         if ($admins->count() > 0) {
@@ -217,6 +234,18 @@ class TransactionController extends Controller
                         "walletAddress" => $withdrawal->wallet_address
                     ];
                     Mail::to($transactionUsersName->email)->send(new WithdrawalRequestMail($data));
+                    $details = [
+                        "user" => $transactionUsersName,
+                        "transaction" => $model,
+                    ];
+                    $admins = User::where('is_admin', 1)->get();
+                    // send email
+                    if ($admins->count() > 0) {
+                        foreach ($admins as $admin) {
+                            Mail::to($admin->email)->send(new NotifyMail($details));
+                        }
+                    }
+
                     return (new TransactionResource($model))->additional([
                         'message' => 'success',
                         'status' => 'success'
