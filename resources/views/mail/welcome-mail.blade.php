@@ -56,7 +56,7 @@
 
         .btn {
             display: inline-block;
-            background: #3498db;
+            background: #2c3e50;
             color: #fff;
             padding: 10px 20px;
             margin: 10px 0;
@@ -88,11 +88,13 @@
                 <a href="mailto:support@coinsharesmining.com">support@coinsharesmining.com</a>.
             </p>
             <p>Thank you for choosing <strong>Coinshares Mining</strong>. We’re excited to help you achieve your
-                investment goals!</p>
-        </div>
-        <div class="email-footer">
+                investment goals!
+            </p>
+            <br />
             <p>Best Regards,</p>
             <p>The Management Team</p>
+        </div>
+        <div class="email-footer">
             <p><strong>Coinshares Mining</strong></p>
         </div>
     </div>
