@@ -12,7 +12,7 @@ use Illuminate\Queue\SerializesModels;
 
 use function Laravel\Prompts\password;
 
-class RegisterMail extends Mailable
+class DepositConfirmationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -24,8 +24,10 @@ class RegisterMail extends Mailable
      */
     public function __construct(User $user)
     {
+        //
+
         $this->user = $user;
-        $this->url = env('APP_URL') . '/login';
+        $this->url = env('APP_URL') . '/confirm-account/' . $this->user->id . '/' . $this->user->remember_token;
     }
 
     /**
@@ -44,7 +46,7 @@ class RegisterMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'mail.welcome-mail',
+            view: 'mail.deposit-confirmation-mail',
         );
     }
 
