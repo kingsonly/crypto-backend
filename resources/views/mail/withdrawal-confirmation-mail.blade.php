@@ -79,20 +79,22 @@
             <h1>Withdrawal Confirmation</h1>
         </div>
         <div class="email-body">
-            <h2>Dear {{ $user->name }},</h2>
+            <h2>Dear {{ $data['name'] }},</h2>
             <p>We are writing to confirm that we have processed your recent withdrawal request from your Coinshares
                 Mining account.</p>
             <div class="details">
                 <p><strong>Details of the Withdrawal:</strong></p>
-                <p><strong>Amount:</strong> {{ $amount }}</p>
-                <p><strong>Withdrawal Method:</strong> {{ $method }}</p>
-                <p><strong>Date Processed:</strong> {{ $date }}</p>
+                <p><strong>Amount:</strong> {{ $data['transaction']->amount }}</p>
+                <p><strong>Withdrawal Method:</strong> {{ $data['transaction']->method }}</p>
+                <p><strong>Wallet Address:</strong> {{ $data['walletAddress'] }}</p>
+                <p><strong>Date Processed:</strong> {{ $data['transaction']->updated_at }}</p>
             </div>
             <p>Thank you for choosing Coinshares Mining.</p>
-        </div>
-        <div class="email-footer">
+            <br />
             <p>Best Regards,</p>
             <p>The Management Team</p>
+        </div>
+        <div class="email-footer">
             <p><strong>Coinshares Mining</strong></p>
         </div>
     </div>

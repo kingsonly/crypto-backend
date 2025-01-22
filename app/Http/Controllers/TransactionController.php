@@ -17,6 +17,8 @@ use Illuminate\Support\Facades\Mail;
 use App\Http\Resources\InvestmentResource;
 use App\Http\Resources\TransactionResource;
 use App\Mail\DepositConfirmationMail;
+use App\Mail\WithdrawalConfirmationMail;
+use App\Mail\WithdrawalRequestMail;
 
 class TransactionController extends Controller
 {
@@ -208,6 +210,13 @@ class TransactionController extends Controller
 
                 if ($withdrawal->save()) {
                     DB::commit();
+                    $transactionUsersName = User::where("id", $model->user_id)->first();
+                    $data = [
+                        "name" => $transactionUsersName->name,
+                        "transaction" => $model,
+                        "walletAddress" => $withdrawal->wallet_address
+                    ];
+                    Mail::to($transactionUsersName->email)->send(new WithdrawalRequestMail($data));
                     return (new TransactionResource($model))->additional([
                         'message' => 'success',
                         'status' => 'success'
@@ -317,6 +326,13 @@ class TransactionController extends Controller
                         $withdrawalModel->status = 1;
                         if ($withdrawalModel->save()) {
                             DB::commit();
+                            $transactionUsersName = User::where("id", $model->user_id)->first();
+                            $data = [
+                                "name" => $transactionUsersName->name,
+                                "transaction" => $model,
+                                "walletAddress" => $withdrawalModel->wallet_address
+                            ];
+                            Mail::to($transactionUsersName->email)->send(new WithdrawalConfirmationMail($data));
                             return response()->json([
                                 "status" => 'success',
                                 'message' => 'Withdrawal approved',

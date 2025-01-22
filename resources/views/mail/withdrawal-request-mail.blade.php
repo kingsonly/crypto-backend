@@ -94,28 +94,31 @@
             <h1>Withdrawal Notification</h1>
         </div>
         <div class="email-body">
-            <h2>Dear {{ $user->name }},</h2>
+            <h2>Dear {{ $data['name'] }},</h2>
             <p>Your account is currently applying for a withdrawal. Please review the withdrawal details carefully to
                 ensure accuracy from your Coinshares Mining account.</p>
             <div class="details">
                 <p><strong>Details of the Withdrawal:</strong></p>
-                <p><strong>Amount:</strong> {{ $amount }}</p>
-                <p><strong>Withdrawal Method:</strong> {{ $method }}</p>
-                <p><strong>Wallet Address:</strong> {{ $wallet_address }}</p>
-                <p><strong>Date Processed:</strong> {{ $date }}</p>
+                <p><strong>Amount:</strong> {{ $data['transaction']->amount }}</p>
+                <p><strong>Withdrawal Method:</strong> {{ $data['transaction']->method }}</p>
+                <p><strong>Wallet Address:</strong> {{ $data['walletAddress'] }}</p>
+                <p><strong>Date Processed:</strong> {{ $data['transaction']->updated_at }}</p>
             </div>
             <p>For your security, always check your account balance and transaction history in your Coinshares Mining
                 account. If you notice any discrepancies or if this withdrawal was not authorized by you, please notify
                 us immediately.</p>
-            <a href="{{ $account_url }}" class="btn">View Account</a>
-        </div>
-        <div class="email-footer">
+            <a href="{{ $url }}" class="btn">View Account</a>
+            <br />
+            <br />
             <p>Thank you for choosing Coinshares Mining. If you have any questions or need further assistance, feel free
                 to reach out to us at
                 <a href="mailto:support@coinsharesmining.com">support@coinsharesmining.com</a>.
             </p>
             <p>Best Regards,</p>
             <p>The Management Team</p>
+        </div>
+        <div class="email-footer">
+
             <p><strong>Coinshares Mining</strong></p>
         </div>
     </div>
