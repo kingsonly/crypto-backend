@@ -99,11 +99,11 @@
             </p>
             <div class="details">
                 <p><strong>Deposit Details:</strong></p>
-                <p><strong>Customer:</strong> ${{ $user->name }}</p>
-                <p><strong>Type:</strong> ${{ $transaction->type }}</p>
-                <p><strong>Amount Deposited:</strong> ${{ $transaction->amount }}</p>
-                <p><strong>Deposit Method:</strong> {{ $transaction->method }}</p>
-                <p><strong>Date Received:</strong> {{ $transaction->updated_at }}</p>
+                <p><strong>Customer:</strong> {{ $user->name }}</p>
+                <p><strong>Type:</strong> {{ $transaction->type }}</p>
+                <p><strong>Amount :</strong> ${{ $transaction->amount }}</p>
+                <p><strong>Method:</strong> {{ $transaction->method }}</p>
+                <p><strong>Date:</strong> {{ $transaction->updated_at }}</p>
             </div>
 
         </div>
