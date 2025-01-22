@@ -107,10 +107,12 @@
             <p>If you have any questions or require further assistance, please don't hesitate to reach out to us at
                 <a href="mailto:support@coinsharesmining.com">support@coinsharesmining.com</a>.
             </p>
-        </div>
-        <div class="email-footer">
+            <br />
             <p>Best Regards,</p>
             <p>The Management Team</p>
+        </div>
+        <div class="email-footer">
+
             <p><strong>Coinshares Mining</strong></p>
         </div>
     </div>
