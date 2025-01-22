@@ -83,7 +83,7 @@ class UserService
 
     public function viewAllStaff()
     {
-        return User::all();
+        return User::orderBy('id', 'desc')->all();
     }
 
     public function getAllStaffByRole($role)
