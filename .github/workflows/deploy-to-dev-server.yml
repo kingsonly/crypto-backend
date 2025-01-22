@@ -62,7 +62,11 @@ jobs:
           sed -i -e 's:DB_DATABASE=forge:DB_DATABASE=coinjzcf_coinsharesmining:g' .env &&
           sed -i -e 's:DB_USERNAME=forge:DB_USERNAME=coinjzcf_coinsharesmining:g' .env  &&
           sed -i -e 's:/../bootstrap/app.php:/bootstrap/app.php:g' public/index.php &&
-          sed -i -e 's:DB_PASSWORD=forge:DB_PASSWORD=coinsharesmining:g' .env 
+          sed -i -e 's:DB_PASSWORD=forge:DB_PASSWORD=coinsharesmining:g' .env &&
+          sed -i -e 's:MAIL_HOST=forge:MAIL_HOST="${{secrets.MAIL_HOST}}":g' .env &&
+          sed -i -e 's:MAIL_USERNAME=forge:MAIL_USERNAME="${{secrets.MAIL_USERNAME}}":g' .env &&
+          sed -i -e 's:MAIL_PASSWORD=forge:MAIL_PASSWORD="${{secrets.MAIL_PASSWORD}}":g' .env
+          
 # change service_name_placeholder to the name of your service eg automator etc 
       - name: SSH login
         run: |
@@ -76,4 +80,4 @@ jobs:
 # change service_name_placeholder to the name of your service eg automator etc  
       - name: SSH and effect migration
         run: |
-          ssh -p 21098 -i ~/.ssh/id_rsa -t coinjzcf@198.54.114.151 "cd api && php artisan migrate:fresh && php artisan db:seed"
+          ssh -p 21098 -i ~/.ssh/id_rsa -t coinjzcf@198.54.114.151 "cd api && php artisan migrate"
