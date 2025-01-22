@@ -94,14 +94,14 @@
             <h1>Deposit Confirmation</h1>
         </div>
         <div class="email-body">
-            <h2>Dear {{ $user->name }},</h2>
+            <h2>Dear {{ $data['name'] }},</h2>
             <p>We are pleased to confirm that we have received your recent deposit into your Coinshares Mining account.
             </p>
             <div class="details">
                 <p><strong>Deposit Details:</strong></p>
-                <p><strong>Amount Deposited:</strong> {{ $amount }}</p>
-                <p><strong>Deposit Method:</strong> {{ $method }}</p>
-                <p><strong>Date Received:</strong> {{ $date }}</p>
+                <p><strong>Amount Deposited:</strong> {{ $data['transaction']->amount }}</p>
+                <p><strong>Deposit Method:</strong> {{ $data['transaction']->method }}</p>
+                <p><strong>Date Received:</strong> {{ $data['transaction']->updated_at }}</p>
             </div>
             <p>Your account has been credited with the above amount.</p>
             <p>If you have any questions or require further assistance, please don't hesitate to reach out to us at

@@ -16,18 +16,14 @@ class DepositConfirmationMail extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $user;
-    public $url;
+    public $data;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(User $user)
+    public function __construct($data)
     {
-        //
-
-        $this->user = $user;
-        $this->url = env('APP_URL') . '/confirm-account/' . $this->user->id . '/' . $this->user->remember_token;
+        $this->data = $data;
     }
 
     /**
@@ -36,7 +32,7 @@ class DepositConfirmationMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Welcome to Coinshares Mining',
+            subject: 'Deposit Confirmation - Coinshares Mining',
         );
     }
 
