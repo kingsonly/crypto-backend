@@ -16,6 +16,7 @@ use Illuminate\Validation\Rules\In;
 use Illuminate\Support\Facades\Mail;
 use App\Http\Resources\InvestmentResource;
 use App\Http\Resources\TransactionResource;
+use App\Mail\DepositConfirmationMail;
 
 class TransactionController extends Controller
 {
@@ -119,9 +120,16 @@ class TransactionController extends Controller
                 }
             }
             if ($model) {
-                DB::commit();
                 $model->status = 1;
                 if ($model->save()) {
+
+                    DB::commit();
+                    $transactionUsersName = User::where("id", $model->user_id)->first();
+                    $data = [
+                        "name" => $transactionUsersName->name,
+                        "transaction" => $model
+                    ];
+                    Mail::to($transactionUsersName->email)->send(new DepositConfirmationMail($data));
                     return response()->json([
                         "status" => 'success',
                         'message' => 'Deposit confirmed',
