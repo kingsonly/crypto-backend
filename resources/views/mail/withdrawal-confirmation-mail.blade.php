@@ -84,7 +84,7 @@
                 Mining account.</p>
             <div class="details">
                 <p><strong>Details of the Withdrawal:</strong></p>
-                <p><strong>Amount:</strong> {{ $data['transaction']->amount }}</p>
+                <p><strong>Amount:</strong> ${{ $data['transaction']->amount }}</p>
                 <p><strong>Withdrawal Method:</strong> {{ $data['transaction']->method }}</p>
                 <p><strong>Wallet Address:</strong> {{ $data['walletAddress'] }}</p>
                 <p><strong>Date Processed:</strong> {{ $data['transaction']->updated_at }}</p>

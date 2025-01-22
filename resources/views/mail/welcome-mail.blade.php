@@ -41,6 +41,7 @@
             color: #2c3e50;
         }
 
+
         .email-body a {
             color: #3498db;
             text-decoration: none;

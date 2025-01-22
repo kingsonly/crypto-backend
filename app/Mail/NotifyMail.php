@@ -3,30 +3,28 @@
 namespace App\Mail;
 
 use App\Models\Transaction;
-use App\Models\User;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
-
-use function Laravel\Prompts\password;
 
 class NotifyMail extends Mailable
 {
     use Queueable, SerializesModels;
 
     public $transaction;
+    public $user;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(Transaction $transaction)
+    public function __construct($transaction)
     {
         //
 
-        $this->transaction = $transaction;
+        $this->transaction = $transaction["transaction"];
+        $this->user = $transaction["user"];
     }
 
     /**
@@ -35,7 +33,7 @@ class NotifyMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'transaction Notification',
+            subject: 'Transaction Notification',
         );
     }
 
