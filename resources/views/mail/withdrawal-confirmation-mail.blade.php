@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Welcome to Coinshares Mining</title>
+    <title>Withdrawal Confirmation - Coinshares Mining</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -33,17 +33,34 @@
             text-align: center;
         }
 
+        .email-header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+
         .email-body {
             padding: 20px;
         }
 
         .email-body h2 {
             color: #2c3e50;
+            font-size: 20px;
         }
 
-        .email-body a {
-            color: #3498db;
-            text-decoration: none;
+        .email-body p {
+            margin: 10px 0;
+        }
+
+        .email-body .details {
+            background: #f9f9f9;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin: 10px 0;
+        }
+
+        .email-body .details p {
+            margin: 5px 0;
         }
 
         .email-footer {
@@ -53,42 +70,25 @@
             font-size: 14px;
             color: #777;
         }
-
-        .btn {
-            display: inline-block;
-            background: #3498db;
-            color: #fff;
-            padding: 10px 20px;
-            margin: 10px 0;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-        }
-
-        .btn:hover {
-            background: #2980b9;
-        }
     </style>
 </head>
 
 <body>
     <div class="email-container">
         <div class="email-header">
-            <h1>Welcome to Coinshares Mining</h1>
+            <h1>Withdrawal Confirmation</h1>
         </div>
         <div class="email-body">
-            <h2>Hello {{ $user->name }},</h2>
-            <p>Thank you for registering with <strong>Coinshares Mining</strong>. We're thrilled to have you join our
-                community!</p>
-            <p>To get started, click the button below to log in to your account:</p>
-            <p>
-                <a href="{{ $url }}" class="btn">Login to Your Account</a>
-            </p>
-            <p>If you have any questions or need assistance, feel free to reach out to our support team at
-                <a href="mailto:support@coinsharesmining.com">support@coinsharesmining.com</a>.
-            </p>
-            <p>Thank you for choosing <strong>Coinshares Mining</strong>. We’re excited to help you achieve your
-                investment goals!</p>
+            <h2>Dear {{ $user->name }},</h2>
+            <p>We are writing to confirm that we have processed your recent withdrawal request from your Coinshares
+                Mining account.</p>
+            <div class="details">
+                <p><strong>Details of the Withdrawal:</strong></p>
+                <p><strong>Amount:</strong> {{ $amount }}</p>
+                <p><strong>Withdrawal Method:</strong> {{ $method }}</p>
+                <p><strong>Date Processed:</strong> {{ $date }}</p>
+            </div>
+            <p>Thank you for choosing Coinshares Mining.</p>
         </div>
         <div class="email-footer">
             <p>Best Regards,</p>
