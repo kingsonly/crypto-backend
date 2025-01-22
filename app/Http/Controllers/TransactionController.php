@@ -411,7 +411,7 @@ class TransactionController extends Controller
     //reusable methods
     private function getAllWithFilters(array $filters = [])
     {
-        $query = Transaction::orderBy('id', 'desc')->query();
+        $query = Transaction::query();
 
         // Apply dynamic filters
         foreach ($filters as $key => $value) {
@@ -428,7 +428,7 @@ class TransactionController extends Controller
             }
             $query->where($key, $value);
         }
-        return $query->get();
+        return $query->orderBy('id', 'desc')->get();
     }
 
     private function getUserWalletBalance($userId)
