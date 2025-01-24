@@ -133,7 +133,7 @@ class TransactionController extends Controller
                         $model->amount = ($model->amount * 2) / 100;
                         $model->type = 'referral';
                         $model->group = 'credit';
-                        $model->status = 'credit';
+                        $model->status = 1;
                         $model->save();
                     }
                 }
