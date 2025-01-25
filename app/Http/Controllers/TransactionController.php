@@ -120,26 +120,34 @@ class TransactionController extends Controller
             // make a deposit request 
             $model = Transaction::where('id', $id)->first();
             // check if this deposit is the users first deposit 
-            $getAllUserDeposits = Transaction::where('user_id', $model->user_id)->where('type', 'deposit')->get();
-            if ($getAllUserDeposits->count() == 1) {
-                // check for users ref
-                $user = User::where('id', $model->user_id)->first();
-                if ($user->ref > 0) {
-                    $ref = User::where('id', $user->ref)->first();
-                    if ($ref) {
-                        // make a deposit for ref
-                        $model = new Transaction();
-                        $model->user_id = $ref->id;
-                        $model->amount = ($model->amount * 2) / 100;
-                        $model->type = 'referral';
-                        $model->group = 'credit';
-                        $model->status = 1;
-                        $model->save();
-                    }
-                }
-            }
+
             if ($model) {
                 $model->status = 1;
+                $getAllUserDeposits = Transaction::where('user_id', $model->user_id)->where('type', 'deposit')->get();
+                if ($getAllUserDeposits->count() == 1) {
+                    // check for users ref
+                    $user = User::where('id', $model->user_id)->first();
+                    if ($user->ref > 0) {
+                        $ref = User::where('id', $user->ref)->first();
+                        if ($ref) {
+                            // make a deposit for ref
+                            $refModel = new Transaction();
+                            $refModel->user_id = $ref->id;
+                            $refModel->amount = ($model->amount * 2) / 100;
+                            $refModel->type = 'referral';
+                            $refModel->group = 'credit';
+                            $refModel->status = 1;
+
+                            if ($refModel->save()) {
+                                $refData = [
+                                    "name" => $ref->name,
+                                    "transaction" => $model
+                                ];
+                                Mail::to($ref->email)->send(new DepositConfirmationMail($refData));
+                            }
+                        }
+                    }
+                }
                 if ($model->save()) {
 
                     DB::commit();
