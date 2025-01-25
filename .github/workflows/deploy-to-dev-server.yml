@@ -78,6 +78,6 @@ jobs:
             composer.json resources composer.lock routes config package.json \
             public/ public coinjzcf@198.54.114.151:api
 # change service_name_placeholder to the name of your service eg automator etc  
-      - name: SSH and effect migration
-        run: |
-          ssh -p 21098 -i ~/.ssh/id_rsa -t coinjzcf@198.54.114.151 "cd api && php artisan migrate"
+      # - name: SSH and effect migration
+      #   run: |
+      #     ssh -p 21098 -i ~/.ssh/id_rsa -t coinjzcf@198.54.114.151 "cd api && php artisan migrate"
